@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Snake Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5; /* Light Grey Background */
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 10px solid #34495e;
+            background-color: #ffffff; /* White background for clean look */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .score-board {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #restartBtn {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #restartBtn:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+
+    <div class="score-board">Score: <span id="score">0</span></div>
+    <canvas id="snakeGame" width="400" height="400"></canvas>
+    <button id="restartBtn" onclick="resetGame()">Try Again</button>
+
+<script>
+    const canvas = document.getElementById("snakeGame");
+    const ctx = canvas.getContext("2d");
+    const scoreElement = document.getElementById("score");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const box = 20;
+    let score, snake, food, d, gameSpeed, game;
+
+    function init() {
+        score = 0;
+        scoreElement.innerHTML = score;
+        gameSpeed = 100;
+        d = undefined;
+        snake = [{ x: 9 * box, y: 10 * box }];
+        spawnFood();
+        restartBtn.style.display = "none";
+        if(game) clearInterval(game);
+        game = setInterval(draw, gameSpeed);
+    }
+
+    function spawnFood() {
+        food = {
+            x: Math.floor(Math.random() * 19 + 1) * box,
+            y: Math.floor(Math.random() * 19 + 1) * box
+        };
+    }
+
+    document.addEventListener("keydown", direction);
+    function direction(event) {
+        let key = event.keyCode;
+        if(key == 37 && d != "RIGHT") d = "LEFT";
+        else if(key == 38 && d != "DOWN") d = "UP";
+        else if(key == 39 && d != "LEFT") d = "RIGHT";
+        else if(key == 40 && d != "UP") d = "DOWN";
+    }
+
+    function collision(head, array) {
+        for(let i = 0; i < array.length; i++) {
+            if(head.x == array[i].x && head.y == array[i].y) return true;
+        }
+        return false;
+    }
+
+    function draw() {
+        // Clear Canvas
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Snake (No Glow, Solid Blue)
+        for(let i = 0; i < snake.length; i++) {
+            ctx.fillStyle = (i == 0) ? "#1a5276" : "#2980b9"; // Head is darker blue
+            ctx.fillRect(snake[i].x, snake[i].y, box, box);
+            // Small border for snake segments
+            ctx.strokeStyle = "white";
+            ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+        }
+
+        // Draw Food (Solid Red)
+        ctx.fillStyle = "#c0392b";
+        ctx.fillRect(food.x, food.y, box, box);
+
+        let snakeX = snake[0].x;
+        let snakeY = snake[0].y;
+
+        if( d == "LEFT") snakeX -= box;
+        if( d == "UP") snakeY -= box;
+        if( d == "RIGHT") snakeX += box;
+        if( d == "DOWN") snakeY += box;
+
+        if(snakeX == food.x && snakeY == food.y) {
+            score++;
+            scoreElement.innerHTML = score;
+            spawnFood();
+        } else {
+            snake.pop();
+        }
+
+        let newHead = { x: snakeX, y: snakeY };
+
+        if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+            clearInterval(game);
+            gameOver();
+        }
+
+        snake.unshift(newHead);
+    }
+
+    function gameOver() {
+        ctx.fillStyle = "rgba(52, 73, 94, 0.9)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+        restartBtn.style.display = "block";
+    }
+
+    function resetGame() {
+        init();
+    }
+
+    init();
+</script>
+</body>
+</html>

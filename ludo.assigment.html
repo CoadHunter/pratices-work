@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Ludo Board with Grid</title>
+    <link rel="stylesheet" href="css.ludo.css">
+   
+</head>
+<body>
+
+<div class="ludo-board">
+    <div class="base red-bg red-base">
+        <div class="base-inner">
+            <div class="token red-piece"></div><div class="token red-piece"></div>
+            <div class="token red-piece"></div><div class="token red-piece"></div>
+        </div>
+    </div>
+
+    <div class="base green-bg green-base">
+        <div class="base-inner">
+            <div class="token green-piece"></div><div class="token green-piece"></div>
+            <div class="token green-piece"></div><div class="token green-piece"></div>
+        </div>
+    </div>
+
+    <div class="base yellow-bg yellow-base">
+        <div class="base-inner">
+            <div class="token yellow-piece"></div><div class="token yellow-piece"></div>
+            <div class="token yellow-piece"></div><div class="token yellow-piece"></div>
+        </div>
+    </div>
+
+    <div class="base blue-bg blue-base">
+        <div class="base-inner">
+            <div class="token blue-piece"></div><div class="token blue-piece"></div>
+            <div class="token blue-piece"></div><div class="token blue-piece"></div>
+        </div>
+    </div>
+
+    <div class="home-center"></div>
+
+    <script>
+        const board = document.querySelector('.ludo-board');
+        // 15x15 grid has 225 cells. 4 bases (36x4) + 1 center (9) = 153. 
+        // We need to fill the remaining 72 cells with 'cell' divs.
+        for (let i = 0; i < 72; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            board.appendChild(cell);
+        }
+    </script>
+
+    <div class="cell safe-red" style="grid-area: 8 / 2 / 9 / 7;"></div>
+    <div class="cell safe-green" style="grid-area: 2 / 8 / 7 / 9;"></div>
+    <div class="cell safe-yellow" style="grid-area: 8 / 10 / 9 / 15;"></div>
+    <div class="cell safe-blue" style="grid-area: 10 / 8 / 15 / 9;"></div>
+
+    <div class="cell start-node red-bg" style="grid-area: 7 / 2;"></div>
+    <div class="cell start-node green-bg" style="grid-area: 2 / 9;"></div>
+    <div class="cell start-node yellow-bg" style="grid-area: 9 / 14;"></div>
+    <div class="cell start-node blue-bg" style="grid-area: 14 / 7;"></div>
+</div>
+
+</body>
+</html>
